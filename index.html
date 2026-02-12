@@ -1,107 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Philippines Got Talent - Digital Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-star-fill text-warning"></i> PGT Digital
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav gap-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-outline-dark btn-sm" href="admin_dashboard.html">Admin Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary btn-sm" style="background-color: var(--primary-blue);" href="talent_dashboard.html">Talent Login</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <section class="hero-section text-center text-lg-start">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="hero-title mb-3">Get Discovered.<br>Get Booked.</h1>
-                    <p class="hero-subtitle">
-                        The centralized digital talent management system for agencies. 
-                        Say goodbye to physical set cards and messy schedules.
-                    </p>
-                    <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-                        <a href="register.html" class="btn btn-accent btn-lg shadow">Join Now</a>
-                        <a href="#how-it-works" class="btn btn-outline-light-custom btn-lg">Learn More</a>
-                    </div>
-                </div>
-                <div class="col-lg-6 mt-5 mt-lg-0 text-center">
-                    <img src="https://placehold.co/600x400/457B95/FFF?text=Talent+Portfolio+Preview" 
-                         alt="App Preview" class="img-fluid rounded-3 shadow-lg">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="features" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 style="color: var(--primary-blue); font-weight: 700;">One Platform, Two Roles</h2>
-                <p class="text-muted">Designed to streamline the audition process for everyone.</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card card-feature h-100">
-                        <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
-                        <h3>For Talents</h3>
-                        <p class="text-muted">Create your digital set card, upload your portfolio, and book audition slots instantly.</p>
-                        <ul class="list-unstyled text-muted">
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Digital "Vitals" Profile</li>
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Real-time Audition Search</li>
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Portfolio Gallery</li>
-                        </ul>
-                        <a href="talent_dashboard.html" class="btn btn-outline-primary mt-auto">Go to Talent Dashboard &rarr;</a>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card card-feature h-100">
-                        <div class="feature-icon"><i class="bi bi-calendar-check"></i></div>
-                        <h3>For Recruiters</h3>
-                        <p class="text-muted">Manage thousands of applicants, schedule auditions, and keep private notes in one place.</p>
-                        <ul class="list-unstyled text-muted">
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Centralized Database</li>
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Private Ratings & Notes</li>
-                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Automated Scheduling</li>
-                        </ul>
-                        <a href="admin_dashboard.html" class="btn btn-outline-dark mt-auto">Go to Admin Dashboard &rarr;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p class="mb-0">&copy; 2024 Philippines Got Talent Group. All rights reserved.</p>
-            <small style="color: #A8DADC;">CCAPDEV Machine Project Phase 1</small>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PGT Digital</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
