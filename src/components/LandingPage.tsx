@@ -25,17 +25,17 @@ export function LandingPage() {
         </div>
         <div className="relative z-10 text-center text-white px-6 max-w-5xl mx-auto">
           <h1 className="text-7xl font-bold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            Get Discovered
+            Join the PGT Roster
           </h1>
           <p className="text-2xl mb-4 max-w-3xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-150">
-            The premier platform connecting talented performers with industry-leading agencies and production companies.
+            We are always looking for fresh faces and new talent. Create your profile today and get discovered by our casting team.
           </p>
           <p className="text-lg mb-10 text-white/90 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-            Streamline your casting process. Showcase your talent. Build your career.
+            Open for Actors, Models, Hosts, and Extras.
           </p>
           <Link to="/select-role">
             <Button size="lg" className="bg-accent hover:bg-accent/90 text-white px-12 py-8 text-xl shadow-2xl hover:scale-105 transition-transform animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
-              Get Started
+              Apply Now / Login
             </Button>
           </Link>
         </div>
@@ -53,20 +53,20 @@ export function LandingPage() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-5xl font-bold mb-2 text-accent">10K+</div>
-              <div className="text-xl text-white/80">Auditions Booked</div>
+              <div className="text-5xl font-bold mb-2 text-accent">Open</div>
+              <div className="text-xl text-white/80">Roster Status</div>
             </div>
             <div>
-              <div className="text-5xl font-bold mb-2 text-accent">5,000+</div>
-              <div className="text-xl text-white/80">Active Talents</div>
+              <div className="text-5xl font-bold mb-2 text-accent">5k+</div>
+              <div className="text-xl text-white/80">Talent Profiles</div>
             </div>
             <div>
-              <div className="text-5xl font-bold mb-2 text-accent">500+</div>
-              <div className="text-xl text-white/80">Agency Partners</div>
+              <div className="text-5xl font-bold mb-2 text-accent">Daily</div>
+              <div className="text-xl text-white/80">New Castings</div>
             </div>
             <div>
-              <div className="text-5xl font-bold mb-2 text-accent">98%</div>
-              <div className="text-xl text-white/80">Satisfaction Rate</div>
+              <div className="text-5xl font-bold mb-2 text-accent">100%</div>
+              <div className="text-xl text-white/80">Free to Join</div>
             </div>
           </div>
         </div>
@@ -77,10 +77,10 @@ export function LandingPage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-primary mb-4">
-              Why Agencies Choose PGT Digital
+              How PGT Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The most comprehensive talent management platform built for the entertainment industry
+              We've made it simple to get your profile in front of the right people.
             </p>
           </div>
 
@@ -90,11 +90,11 @@ export function LandingPage() {
                 <div className="w-16 h-16 bg-accent rounded-lg flex items-center justify-center mb-4">
                   <Search className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl">Smart Discovery</CardTitle>
+                <CardTitle className="text-2xl">1. Create Profile</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Advanced search and filtering tools help you find the perfect talent for any role. Filter by skills, experience, physical attributes, and availability.
+                  Sign up in minutes. Upload your headshots, resume, and reel. This serves as your digital set card in our internal database.
                 </p>
               </CardContent>
             </Card>
@@ -104,11 +104,11 @@ export function LandingPage() {
                 <div className="w-16 h-16 bg-secondary rounded-lg flex items-center justify-center mb-4">
                   <Star className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl">Private Rating System</CardTitle>
+                <CardTitle className="text-2xl">2. We Review</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Keep internal notes and ratings on every talent. Build your shortlists and manage callbacks with our intuitive rating and tagging system.
+                  Our casting directors review new profiles daily. We categorize you based on your look, skills, and experience level.
                 </p>
               </CardContent>
             </Card>
@@ -118,11 +118,11 @@ export function LandingPage() {
                 <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mb-4">
                   <TrendingUp className="w-8 h-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl">Streamlined Workflow</CardTitle>
+                <CardTitle className="text-2xl">3. Get Booked</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Manage entire casting processes from discovery to booking. Track auditions, share feedback with your team, and reduce administrative overhead.
+                  When a client role matches your profile, we contact you directly. No need to endlessly scroll job boards—we bring the work to you.
                 </p>
               </CardContent>
             </Card>
@@ -137,19 +137,19 @@ export function LandingPage() {
             {/* For Talents */}
             <div className="space-y-6">
               <div className="inline-block px-4 py-2 bg-accent/10 rounded-full">
-                <span className="text-accent font-semibold">For Talents</span>
+                <span className="text-accent font-semibold">For Talent</span>
               </div>
-              <h3 className="text-4xl font-bold text-primary">Your Digital Portfolio, Perfected</h3>
+              <h3 className="text-4xl font-bold text-primary">Your Digital Set Card</h3>
               <p className="text-lg text-muted-foreground">
-                Create a stunning digital set card that showcases everything casting directors need to see. From headshots to full performance reels, keep everything in one professional space.
+                Forget printing physical comp cards. Your PGT profile is your professional link to the industry. Keep it updated, and we handle the rest.
               </p>
               <ul className="space-y-4">
                 {[
-                  "Unlimited photo and video uploads",
-                  "Comprehensive digital set cards",
-                  "Track your audition history",
-                  "Get discovered by top agencies",
-                  "Professional presentation tools"
+                  "Upload unlimited photos & videos",
+                  "List special skills & languages",
+                  "Update your availability instantly",
+                  "Direct messaging with PGT agents",
+                  "View audition invites"
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
@@ -169,19 +169,19 @@ export function LandingPage() {
             {/* For Recruiters */}
             <div className="space-y-6">
               <div className="inline-block px-4 py-2 bg-secondary/10 rounded-full">
-                <span className="text-secondary font-semibold">For Recruiters & Agencies</span>
+                <span className="text-secondary font-semibold">For Clients & Brands</span>
               </div>
-              <h3 className="text-4xl font-bold text-primary">Cast Smarter, Not Harder</h3>
+              <h3 className="text-4xl font-bold text-primary">Need Talent for a Project?</h3>
               <p className="text-lg text-muted-foreground">
-                Access thousands of pre-vetted performers with comprehensive profiles. Save time, reduce costs, and find your next star faster than ever.
+                PGT isn't just a database; we are a full-service casting agency. Log in to browse our roster or post a casting call for your next production.
               </p>
               <ul className="space-y-4">
                 {[
-                  "Browse extensive talent database",
-                  "Advanced search and filtering",
-                  "Private notes and star ratings",
-                  "Team collaboration tools",
-                  "Streamlined callback management"
+                  "Browse thousands of vetted profiles",
+                  "Filter by height, age, and skill",
+                  "Post casting calls to our roster",
+                  "Review submissions in one dashboard",
+                  "Seamless booking process"
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle className="w-6 h-6 text-secondary flex-shrink-0 mt-0.5" />
@@ -206,10 +206,10 @@ export function LandingPage() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-primary mb-4">
-              Trusted by Industry Leaders
+              Community Feedback
             </h2>
             <p className="text-xl text-muted-foreground">
-              See what our community has to say
+              What our talent and clients are saying about working with PGT.
             </p>
           </div>
 
@@ -222,15 +222,15 @@ export function LandingPage() {
                   ))}
                 </div>
                 <p className="text-foreground mb-4 italic">
-                  "PGT Digital transformed our casting process. We filled 15 roles in half the time it usually takes. The rating system is a game-changer."
+                  "I signed up on Monday and got a callback for a commercial on Thursday. The process was so much easier than other agencies I've been with."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white font-bold">
-                    SC
+                    JP
                   </div>
                   <div>
-                    <div className="font-semibold">Sarah Chen</div>
-                    <div className="text-sm text-muted-foreground">Casting Director, Broadway Productions</div>
+                    <div className="font-semibold">Jessica Park</div>
+                    <div className="text-sm text-muted-foreground">PGT Talent (Model)</div>
                   </div>
                 </div>
               </CardContent>
@@ -244,7 +244,7 @@ export function LandingPage() {
                   ))}
                 </div>
                 <p className="text-foreground mb-4 italic">
-                  "As a performer, having everything in one place is incredible. I've booked 3 major auditions since joining. My profile gets me noticed!"
+                  "I love that I can update my own photos. My look changes often, and PGT lets me keep my profile current so I don't miss out on roles."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold">
@@ -252,7 +252,7 @@ export function LandingPage() {
                   </div>
                   <div>
                     <div className="font-semibold">Marcus Rodriguez</div>
-                    <div className="text-sm text-muted-foreground">Professional Dancer</div>
+                    <div className="text-sm text-muted-foreground">PGT Talent (Actor)</div>
                   </div>
                 </div>
               </CardContent>
@@ -266,15 +266,15 @@ export function LandingPage() {
                   ))}
                 </div>
                 <p className="text-foreground mb-4 italic">
-                  "Our agency saves 20+ hours per week on talent management. The platform pays for itself. Highly recommend to any serious recruiter."
+                  "As a producer, using the PGT portal to browse their roster saves me hours of email chains. It's modern, fast, and professional."
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    JL
+                    DK
                   </div>
                   <div>
-                    <div className="font-semibold">Jennifer Lopez</div>
-                    <div className="text-sm text-muted-foreground">Talent Agency Director</div>
+                    <div className="font-semibold">David King</div>
+                    <div className="text-sm text-muted-foreground">Production Manager</div>
                   </div>
                 </div>
               </CardContent>
@@ -287,17 +287,17 @@ export function LandingPage() {
       <section className="py-24 bg-gradient-to-br from-primary via-secondary to-accent">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-5xl font-bold text-white mb-6">
-            Ready to Transform Your Career?
+            Get Discovered Today
           </h2>
           <p className="text-white/90 mb-12 text-xl max-w-2xl mx-auto">
-            Join thousands of talents and recruiters already using PGT Digital to discover, connect, and succeed.
+            Join the PGT casting database. It takes less than 5 minutes to create your profile and start your journey.
           </p>
           <Link to="/select-role">
             <Button size="lg" className="bg-white hover:bg-white/90 text-primary px-12 py-8 text-xl shadow-2xl hover:scale-105 transition-transform">
-              Get Started Today
+              Join PGT Roster / Login
             </Button>
           </Link>
-          <p className="text-white/70 mt-6">No credit card required • Free to get started</p>
+          <p className="text-white/70 mt-6">Already a member? Use the button above to login.</p>
         </div>
       </section>
 
@@ -306,45 +306,45 @@ export function LandingPage() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">PGT Digital</h3>
+              <h3 className="text-2xl font-bold mb-4">PGT Agency</h3>
               <p className="text-white/80">
-                The premier talent management platform for the entertainment industry.
+                Connecting exceptional talent with world-class opportunities.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">For Talents</h4>
+              <h4 className="font-semibold mb-4">Talent</h4>
               <ul className="space-y-2 text-white/80">
-                <li><a href="#" className="hover:text-accent transition-colors">Create Profile</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Success Stories</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Resources</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Join Roster</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Member Login</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Browse Jobs</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">FAQ</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">For Agencies</h4>
+              <h4 className="font-semibold mb-4">Clients</h4>
               <ul className="space-y-2 text-white/80">
-                <li><a href="#" className="hover:text-accent transition-colors">Browse Talent</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Case Studies</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Enterprise</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Book Talent</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Post Casting Call</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Client Login</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Contact Agents</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2 text-white/80">
-                <li><a href="#" className="hover:text-accent transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Manila Office</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">help@pgt.agency</a></li>
                 <li><a href="#" className="hover:text-accent transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-accent transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Terms</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-white/60 text-sm">
-              &copy; 2026 PGT Digital. All rights reserved.
+              &copy; 2026 PGT Agency. All rights reserved.
             </p>
             <Link to="/login/admin" className="text-white/40 hover:text-white/60 text-xs transition-colors">
-              System Administration
+              Staff Portal
             </Link>
           </div>
         </div>
