@@ -33,9 +33,9 @@ export function LandingPage() {
           <p className="text-lg mb-10 text-white/90 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
             Open for Actors, Models, Hosts, and Extras.
           </p>
-          <Link to="/select-role">
+          <Link to="/register/talent">
             <Button size="lg" className="bg-accent hover:bg-accent/90 text-white px-12 py-8 text-xl shadow-2xl hover:scale-105 transition-transform animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
-              Apply Now / Login
+              Apply Now
             </Button>
           </Link>
         </div>
@@ -292,11 +292,11 @@ export function LandingPage() {
           <p className="text-white/90 mb-12 text-xl max-w-2xl mx-auto">
             Join the PGT casting database. It takes less than 5 minutes to create your profile and start your journey.
           </p>
-          <Link to="/select-role">
+          <a href="/#hero">
             <Button size="lg" className="bg-white hover:bg-white/90 text-primary px-12 py-8 text-xl shadow-2xl hover:scale-105 transition-transform">
-              Join PGT Roster / Login
+              Join PGT Roster
             </Button>
-          </Link>
+          </a>
           <p className="text-white/70 mt-6">Already a member? Use the button above to login.</p>
         </div>
       </section>

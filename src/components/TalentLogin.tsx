@@ -13,7 +13,7 @@ export function TalentLogin() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In real app, this would authenticate with backend
+    // Put authentication when backend
     console.log("Talent login:", { email, password });
     navigate("/talent/dashboard");
   };
@@ -37,7 +37,7 @@ export function TalentLogin() {
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="Enter Your Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -70,9 +70,9 @@ export function TalentLogin() {
           <div className="mt-6 text-center space-y-3">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <a href="#" className="text-accent hover:underline font-medium">
+              <Link to="/register/talent" className="text-accent hover:underline font-medium">
                 Sign up for free
-              </a>
+              </Link>
             </p>
             <Link to="/select-role" className="text-sm text-muted-foreground hover:text-foreground block">
               ← Choose a different role

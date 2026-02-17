@@ -7,6 +7,7 @@ import { AdminLogin } from "./components/AdminLogin";
 import { TalentDashboard } from "./components/TalentDashboard";
 import { RecruiterDashboard } from "./components/RecruiterDashboard";
 import { AdminDashboard } from "./components/AdminDashboard";
+import { TalentRegistration } from "./components/TalentRegistration";
 
 export const router = createBrowserRouter([
   {
@@ -40,5 +41,9 @@ export const router = createBrowserRouter([
   {
     path: "/admin/dashboard",
     Component: AdminDashboard,
+  },
+  {
+    path: "/register/talent",
+    Component: TalentRegistration,
   },
 ]);

@@ -16,7 +16,7 @@ export function Navbar() {
             About
           </a>
           <Link to="/select-role">
-            <Button className="bg-primary hover:bg-primary/90">Login / Sign Up</Button>
+            <Button className="bg-primary hover:bg-primary/90">Login</Button>
           </Link>
         </div>
       </div>
