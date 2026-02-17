@@ -78,7 +78,7 @@ export function TalentRegistration() {
               <Input id="password" type="password" required className="bg-white" />
             </div>
 
-            <Button type="submit" className="w-full mt-2 bg-primary hover:bg-primary/90 font-semibold shadow-md" disabled={isLoading}>
+            <Button type="submit" className="w-full mt-8 bg-primary hover:bg-primary/90 font-semibold shadow-md" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -90,7 +90,7 @@ export function TalentRegistration() {
             </Button>
           </form>
 
-          <div className="relative my-6">
+          <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-slate-300" />
             </div>
