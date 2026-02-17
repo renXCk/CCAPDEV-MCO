@@ -13,7 +13,6 @@ export function AdminLogin() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In real app, this would authenticate with backend
     console.log("Admin login:", { email, password });
     navigate("/admin/dashboard");
   };

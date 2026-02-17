@@ -15,8 +15,8 @@ export function LandingPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/*Hero Section */}
+      <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${STUDIO_BG})` }}
@@ -72,8 +72,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Features/Why PGT Section */}
-      <section className="py-24 bg-background">
+      {/* About/Why PGT Section */}
+      <section id="about" className="py-24 bg-background">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-primary mb-4">
@@ -122,7 +122,7 @@ export function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  When a client role matches your profile, we contact you directly. No need to endlessly scroll job boards—we bring the work to you.
+                  When a client role matches your profile, we contact you directly. No need to endlessly look for gigs, we bring the work to you.
                 </p>
               </CardContent>
             </Card>
@@ -130,8 +130,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Value Proposition - Split Design */}
-      <section className="py-24 bg-muted">
+      {/* Features Section */}
+      <section id= "features" className="py-24 bg-muted">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
             {/* For Talents */}

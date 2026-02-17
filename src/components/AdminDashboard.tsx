@@ -11,14 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { LogOut, UserPlus, Trash2, FileText } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-// Mock data
 const mockUsers = [
-  { id: 1, name: "Emma Johnson", email: "emma@example.com", role: "Talent", status: "Active", joinedDate: "2026-01-15" },
-  { id: 2, name: "Marcus Williams", email: "marcus@example.com", role: "Talent", status: "Active", joinedDate: "2026-01-20" },
-  { id: 3, name: "Sofia Martinez", email: "sofia@example.com", role: "Talent", status: "Active", joinedDate: "2026-02-01" },
-  { id: 4, name: "Sarah Thompson", email: "sarah@example.com", role: "Recruiter", status: "Active", joinedDate: "2026-01-10" },
-  { id: 5, name: "Michael Davis", email: "michael@example.com", role: "Recruiter", status: "Active", joinedDate: "2026-01-18" },
-  { id: 6, name: "James Chen", email: "james@example.com", role: "Talent", status: "Inactive", joinedDate: "2025-12-05" },
+  { id: 1, name: "Justin Bieber", email: "justin@example.com", role: "Talent", status: "Active", joinedDate: "2026-01-15" },
+  { id: 2, name: "Marcus", email: "marcus@example.com", role: "Talent", status: "Active", joinedDate: "2026-01-20" },
+  { id: 3, name: "Sofia", email: "sofia@example.com", role: "Talent", status: "Active", joinedDate: "2026-02-01" },
+  { id: 4, name: "Sarah Geronimo", email: "sarah@example.com", role: "Recruiter", status: "Active", joinedDate: "2026-01-10" },
+  { id: 5, name: "Michael Jackson", email: "michael@example.com", role: "Recruiter", status: "Active", joinedDate: "2026-01-18" },
+  { id: 6, name: "Lebron James", email: "james@example.com", role: "Talent", status: "Inactive", joinedDate: "2025-12-05" },
 ];
 
 const mockLogs = [
