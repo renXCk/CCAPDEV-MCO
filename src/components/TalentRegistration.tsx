@@ -23,7 +23,6 @@ export function TalentRegistration() {
   };
 
   return (
-    // UPDATED: No 'fixed inset-0'. Uses standard flow with min-height.
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-black">
       
       {/* Background Image - Absolute to the container */}
