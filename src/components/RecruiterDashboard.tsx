@@ -258,7 +258,7 @@ export function RecruiterDashboard() {
       <main className="container mx-auto p-8 max-w-7xl">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-end md:items-center gap-4 border-b border-border/40 pb-2">
-            <TabsList className="bg-background border border-border">
+            <TabsList className="bg-background border border-border rounded-xl p-1">
               <TabsTrigger value="applicants" className="px-6 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Users className="w-4 h-4 mr-2" />
                 Talent Pool
@@ -286,8 +286,10 @@ export function RecruiterDashboard() {
 
           {/* ── TAB 1: TALENT POOL ── */}
           <TabsContent value="applicants" className="mt-0">
-            <Card className="border-none shadow-md">
-              <CardHeader className="bg-card rounded-t-lg">
+            <Card className="border border-border/40 shadow-lg rounded-2xl">
+
+              <CardHeader className="bg-card rounded-t-2xl border-b border-border/60">
+
                 <CardTitle className="text-2xl font-bold text-primary">All Applicants</CardTitle>
                 <CardDescription>Review and rate incoming talent applications.</CardDescription>
               </CardHeader>
