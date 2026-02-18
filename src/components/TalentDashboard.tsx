@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -8,16 +8,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { User, Image as ImageIcon, Calendar, LogOut } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
+const mockAuditions = [
+  {
+    id: 1,
+    title: "PGT Season 7 – Singer Auditions",
+    location: "Studio A",
+    date: "March 10, 2026",
+    slots: ["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM"],
+  },
+  {
+    id: 2,
+    title: "Dance Division Casting Call",
+    location: "Studio B",
+    date: "March 12, 2026",
+    slots: ["1:00 PM", "1:30 PM", "2:00 PM", "2:30 PM"],
+  },
+];
+
+
+
 export function TalentDashboard() {
+    const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("vitals");
-
+    const [bookedSlots, setBookedSlots] = useState<Record<number, string>>({});
     const [vitals, setVitals] = useState({
-
+    name: "Marcus Williams",
     height: "5'8\"",
     weight: "150 lbs",
     hairColor: "Brown",
     eyeColor: "Blue",
-  });
+    });
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,7 +114,17 @@ export function TalentDashboard() {
                 <CardTitle className="text-2xl">Digital Set Card</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                     id="name"
+                     value={vitals.name}
+                     onChange={(e) => setVitals({ ...vitals, name: e.target.value })}
+                     placeholder="Enter your full name"
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="height">Height</Label>
                     <Input
@@ -133,7 +163,13 @@ export function TalentDashboard() {
                   </div>
                 </div>
                 <div className="mt-6">
-                  <Button className="bg-accent hover:bg-accent/90">Save Changes</Button>
+                  <Button
+                  onClick={() => alert("Changes Saved ✅")}
+                  className="bg-accent hover:bg-accent/90"
+                  >
+                  Save Changes
+                  </Button>
+
                 </div>
               </CardContent>
               </Card>
@@ -211,9 +247,73 @@ export function TalentDashboard() {
              <CardTitle className="text-2xl">Auditions</CardTitle>
              </CardHeader>
             <CardContent>
-            <p className="text-muted-foreground">
-             No auditions available yet.
-            </p>
+            <div className="space-y-6">
+            {mockAuditions.map((audition) => (
+  <div
+    key={audition.id}
+    className="p-6 border rounded-xl bg-muted space-y-3"
+  >
+    <div>
+      <h3 className="text-lg font-bold text-primary">
+        {audition.title}
+      </h3>
+      <p className="text-sm text-muted-foreground">
+        {audition.location} • {audition.date}
+      </p>
+    </div>
+
+    {/* Timeslots */}
+    <div className="flex flex-wrap gap-2">
+      {audition.slots.map((slot) => {
+        const isBooked = bookedSlots[audition.id] === slot;
+        const isSelected = selectedSlot === slot;
+
+        return (
+          <Button
+            key={slot}
+            variant="outline"
+            disabled={isBooked}
+            onClick={() => setSelectedSlot(slot)}
+            className={
+              isBooked
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                : isSelected
+                ? "bg-accent text-white"
+                : ""
+            }
+          >
+            {slot}
+          </Button>
+        );
+      })}
+    </div>
+
+    {/* Confirm Booking */}
+    {selectedSlot && (
+      <div className="mt-4">
+        <Button
+          onClick={() => {
+          setBookedSlots((prev) => ({
+          ...prev,
+          [audition.id]: selectedSlot,
+           }));
+
+          alert("Booking Confirmed ✅");
+
+          setSelectedSlot(null);
+        }}
+
+          className="bg-primary text-white hover:bg-primary/90 w-full"
+        >
+          Confirm Booking
+        </Button>
+      </div>
+    )}
+  </div>
+))}
+                  </div>
+                  
+
             </CardContent>
             </Card>
             )}
