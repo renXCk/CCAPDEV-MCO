@@ -9,6 +9,7 @@ import { RecruiterDashboard } from "./components/RecruiterDashboard";
 import { AdminDashboard } from "./components/AdminDashboard";
 import { TalentRegistration } from "./components/TalentRegistration";
 import RecruiterTalentDetails from "./components/RecruiterTalentDetails";
+import { AuditionScheduler } from "./components/AuditionScheduler";
 
 export const router = createBrowserRouter([
   { path: "/", Component: LandingPage },
@@ -20,7 +21,6 @@ export const router = createBrowserRouter([
   { path: "/recruiter/dashboard", Component: RecruiterDashboard },
   { path: "/admin/dashboard", Component: AdminDashboard },
   { path: "/register/talent", Component: TalentRegistration },
-
   { path: "/recruiter/talent/:id", Component: RecruiterTalentDetails },
+  { path: "/recruiter/schedule", Component: AuditionScheduler },
 ]);
-
