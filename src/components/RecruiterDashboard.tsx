@@ -241,7 +241,7 @@ export function RecruiterDashboard() {
               </p>
               <p className="text-sm font-bold text-primary-foreground">Agent Smith</p>
             </div>
-            <Link to="/login">
+            <Link to="/">
               <Button
                 variant="outline"
                 className="border-primary-foreground/40 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:text-primary-foreground font-bold px-5"

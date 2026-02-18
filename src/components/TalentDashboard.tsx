@@ -49,7 +49,7 @@ export function TalentDashboard() {
             <span className="text-white/80">|</span>
             <span className="text-lg">Talent Dashboard</span>
           </div>
-          <Link to="/login">
+          <Link to="/">
             <Button variant="ghost" className="text-white hover:bg-white/10">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
