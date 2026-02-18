@@ -9,7 +9,10 @@ import { User, Image as ImageIcon, Calendar, LogOut } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function TalentDashboard() {
-  const [vitals, setVitals] = useState({
+    const [activeTab, setActiveTab] = useState("vitals");
+
+    const [vitals, setVitals] = useState({
+
     height: "5'8\"",
     weight: "150 lbs",
     hairColor: "Brown",
@@ -38,27 +41,55 @@ export function TalentDashboard() {
       <div className="flex">
         {/* Sidebar */}
         <aside className="w-64 bg-primary text-white min-h-[calc(100vh-64px)] p-6">
-          <nav className="space-y-2">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-accent hover:bg-accent/90 transition-colors">
-              <User className="w-5 h-5" />
-              <span>Vitals</span>
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
-              <ImageIcon className="w-5 h-5" />
-              <span>Media</span>
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
-              <Calendar className="w-5 h-5" />
-              <span>Auditions</span>
-            </button>
-          </nav>
-        </aside>
+        <nav className="space-y-2">
+    
+        <button
+        onClick={() => setActiveTab("vitals")}
+        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+        activeTab === "vitals"
+          ? "bg-accent"
+          : "hover:bg-white/10"
+        }`}
+      >
+      <User className="w-5 h-5" />
+      <span>Vitals</span>
+      </button>
+
+      <button
+      onClick={() => setActiveTab("media")}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+        activeTab === "media"
+          ? "bg-accent"
+          : "hover:bg-white/10"
+        }`}
+      >
+      <ImageIcon className="w-5 h-5" />
+      <span>Media</span>
+     </button>
+
+    <button
+      onClick={() => setActiveTab("auditions")}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+        activeTab === "auditions"
+          ? "bg-accent"
+          : "hover:bg-white/10"
+      }`}
+    >
+      <Calendar className="w-5 h-5" />
+      <span>Auditions</span>
+    </button>
+
+  </nav>
+</aside>
+
 
         {/* Main Content */}
         <main className="flex-1 p-8">
           <div className="max-w-6xl mx-auto space-y-8">
             {/* Digital Set Card Form */}
-            <Card>
+            {activeTab === "vitals" && (
+              <Card>
+                
               <CardHeader>
                 <CardTitle className="text-2xl">Digital Set Card</CardTitle>
               </CardHeader>
@@ -105,9 +136,12 @@ export function TalentDashboard() {
                   <Button className="bg-accent hover:bg-accent/90">Save Changes</Button>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+              )}
+
 
             {/* Gallery Section */}
+            {activeTab === "media" && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">Media Gallery</CardTitle>
@@ -168,7 +202,22 @@ export function TalentDashboard() {
                   </TabsContent>
                 </Tabs>
               </CardContent>
+              </Card>
+              )}
+
+            {activeTab === "auditions" && (
+            <Card>
+            <CardHeader>
+             <CardTitle className="text-2xl">Auditions</CardTitle>
+             </CardHeader>
+            <CardContent>
+            <p className="text-muted-foreground">
+             No auditions available yet.
+            </p>
+            </CardContent>
             </Card>
+            )}
+
           </div>
         </main>
       </div>

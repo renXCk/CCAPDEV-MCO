@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "./ui/badge";
 import { LogOut, Star } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useNavigate } from "react-router";
 
 // Mock data
 const mockApplicants = [
@@ -71,10 +72,26 @@ const mockApplicants = [
 ];
 
 export function RecruiterDashboard() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All");
+  const navigate = useNavigate();
   const [selectedTalent, setSelectedTalent] = useState<typeof mockApplicants[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [notes, setNotes] = useState("");
+
+  const filteredApplicants = mockApplicants.filter((applicant) => {
+  const matchesName = applicant.name
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase());
+
+  const matchesRole =
+    roleFilter === "All" || applicant.role === roleFilter;
+
+  return matchesName && matchesRole;
+});
+
+  
 
   const openRateModal = (talent: typeof mockApplicants[0]) => {
     setSelectedTalent(talent);
@@ -115,6 +132,29 @@ export function RecruiterDashboard() {
             <CardTitle className="text-2xl">Talent Applicants</CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="md:flex-[2]">
+            <Input
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
+            />
+          </div>
+
+      <div className="md:flex-[1]">
+    <select
+      value={roleFilter}
+      onChange={(e) => setRoleFilter(e.target.value)}
+      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+    >
+      <option value="All">All Roles</option>
+      <option value="Singer">Singer</option>
+      <option value="Dancer">Dancer</option>
+    </select>
+  </div>
+</div>
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -126,8 +166,14 @@ export function RecruiterDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockApplicants.map((applicant) => (
-                  <TableRow key={applicant.id}>
+                {filteredApplicants.map((applicant) => (
+                  <TableRow
+                  key={applicant.id}
+                  onClick={() => navigate(`/recruiter/talent/${applicant.id}`)}
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  >
+
+
                     <TableCell>
                       <div className="w-16 h-16 rounded-full overflow-hidden">
                         <ImageWithFallback
@@ -146,11 +192,15 @@ export function RecruiterDashboard() {
                     <TableCell>{applicant.age}</TableCell>
                     <TableCell className="text-right">
                       <Button
-                        onClick={() => openRateModal(applicant)}
-                        className="bg-accent hover:bg-accent/90"
-                      >
-                        Rate Talent
-                      </Button>
+                      onClick={(e) => {
+                      e.stopPropagation();  
+                      openRateModal(applicant);
+                     }}
+                    className="bg-accent hover:bg-accent/90"
+                    >
+                    Rate Talent
+                    </Button>
+
                     </TableCell>
                   </TableRow>
                 ))}
@@ -181,7 +231,7 @@ export function RecruiterDashboard() {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex-1">
+                <div className="md:flex-[2]">
                   <h3 className="text-xl font-semibold mb-2">{selectedTalent.name}</h3>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
