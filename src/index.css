@@ -1,4 +1,5 @@
 /*! tailwindcss v4.1.3 | MIT License | https://tailwindcss.com */
+
 @layer properties {
   @supports (((-webkit-hyphens: none)) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
     *, :before, :after, ::backdrop {
@@ -70,6 +71,11 @@
     --color-gray-100: oklch(.967 .003 264.542);
     --color-black: #000;
     --color-white: #fff;
+    --color-bg-neutral: #F8F9FA; /* [cite: 106] */
+    --color-primary-blue: #1D3557; /*  */
+    --color-secondary-blue: #457B95; /*  */
+    --color-text-primary: #111827; /* [cite: 109] */
+    --color-accent-teal: #2AA197;
     --spacing: .25rem;
     --container-md: 28rem;
     --container-lg: 32rem;
@@ -118,6 +124,68 @@
   }
 }
 
+body, #root {
+  background-color: #F8F9FA !important; /* Light gray page background */
+  color: #1D3557 !important;
+}
+
+/* 2. SHARED WHITE MODULE STYLES */
+#recruiter_module_1, 
+#recruiter_module_2 {
+  background-color: #FFFFFF !important; /* Force White */
+  border: 2px solid #E2E8F0 !important; /* Consistent Light Border */
+  border-radius: 24px !important;
+  min-height: 150px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: all 0.3s ease !important;
+  padding-top: 20px !important;
+}
+
+#recruiter_module_1:hover, 
+#recruiter_module_2:hover {
+  border-color: #1D3557 !important; /* Border turns Navy on hover */
+  transform: translateY(-5px) !important;
+  box-shadow: 0 20px 25px -5px rgba(29, 53, 87, 0.1) !important;
+}
+
+/* 3. SHARED TEXT COLORS (NAVY ON WHITE) */
+#recruiter_module_1 h4, #recruiter_module_2 h4 {
+  color: #1D3557 !important; /* Navy Headings */
+  font-weight: 670 !important;
+}
+
+#recruiter_module_1 p, #recruiter_module_2 p {
+  color: #457B95 !important; /* Steel Blue for description */
+  opacity: 1 !important;
+
+}
+  
+
+
+#recruiter_module_1 .module-icon-container, 
+#recruiter_module_2 .module-icon-container {
+  background-color: #1D3557 !important; /* Navy Icon Box */
+  color: #FFFFFF !important;
+  border-radius: 16px !important;
+}
+
+#recruiter_module_1 > div, #recruiter_module_2 > div {
+  padding: 40px !important; 
+}
+
+/* 5. UNIFORM BUTTONS (TEAL) */
+#recruiter_module_1 .module-button, 
+#recruiter_module_2 .module-button {
+  background-color: #06081f !important; 
+  color: #FFFFFF !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  border-radius: 12px !important;
+  margin-top: 0 !important;
+  border: none !important;
+}
+
 @layer base {
   *, :after, :before, ::backdrop {
     box-sizing: border-box;
@@ -145,6 +213,8 @@
 
   body {
     line-height: inherit;
+    background-color: #F1F3F5; 
+    color: #1D3557 !important; 
   }
 
   hr {
