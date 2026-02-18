@@ -2,13 +2,26 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import { Badge } from "./ui/badge";
-import { LogOut, Star } from "lucide-react";
+import { Input } from "./ui/input";
+
+import {
+  LogOut,
+  Star,
+  Users,
+  Calendar,
+  Search,
+  LayoutDashboard,
+  TrendingUp,
+  ChevronRight,
+  ClipboardCheck,
+  Building2,
+} from "lucide-react";
+
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useNavigate } from "react-router";
 
@@ -101,27 +114,49 @@ export function RecruiterDashboard() {
   };
 
   const handleSubmitRating = () => {
-    // In real app, this would save to database
     console.log("Rating submitted:", { talent: selectedTalent, rating, notes });
     setIsModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-secondary text-white py-4 px-6 shadow-lg">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold">PGT Digital</h1>
-            <span className="text-white/80">|</span>
-            <span className="text-lg">Recruiter Dashboard</span>
+    <div className="min-h-screen bg-muted flex flex-col">
+
+      {/* ── HEADER ── bg-primary (navy #1d3557), text white */}
+      <header className="bg-primary text-primary-foreground py-5 px-8 shadow-2xl">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+
+          {/* Left: Brand + badge */}
+          <div className="flex items-center gap-6">
+            <h1 className="text-2xl font-black tracking-tighter italic text-primary-foreground">
+              PGT <span className="text-accent">PRO</span>
+            </h1>
+            <div className="h-8 w-px bg-primary-foreground/20 hidden md:block" />
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-black/20 rounded-full">
+              <LayoutDashboard className="w-4 h-4 text-accent" />
+              <span className="text-xs font-bold uppercase tracking-widest text-primary-foreground">
+                Command Center
+              </span>
+            </div>
           </div>
-          <Link to="/login">
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </Link>
+
+          {/* Right: User info + logout */}
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-xs font-bold text-accent uppercase tracking-widest leading-none">
+                Verified Recruiter
+              </p>
+              <p className="text-sm font-bold text-primary-foreground">Agent Smith</p>
+            </div>
+            <Link to="/login">
+              <Button
+                variant="outline"
+                className="border-primary-foreground/40 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:text-primary-foreground font-bold px-5"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -210,21 +245,21 @@ export function RecruiterDashboard() {
         </Card>
       </main>
 
-      {/* Rate Talent Modal */}
+      {/* ── RATE TALENT MODAL ── */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl bg-card border-2 border-border">
           <DialogHeader>
-            <DialogTitle>Rate Talent</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-black text-primary">Rate Talent</DialogTitle>
+            <DialogDescription className="text-muted-foreground font-semibold">
               Provide your internal rating and notes for this talent
             </DialogDescription>
           </DialogHeader>
 
           {selectedTalent && (
             <div className="space-y-6">
-              {/* Talent Details */}
-              <div className="flex items-start gap-4 p-4 bg-muted rounded-lg">
-                <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0">
+              {/* Talent details */}
+              <div className="flex items-start gap-4 p-4 bg-muted rounded-lg border border-border">
+                <div className="w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-2 border-secondary">
                   <ImageWithFallback
                     src={selectedTalent.headshot}
                     alt={selectedTalent.name}
@@ -235,33 +270,40 @@ export function RecruiterDashboard() {
                   <h3 className="text-xl font-semibold mb-2">{selectedTalent.name}</h3>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <span className="text-muted-foreground">Role:</span>{" "}
+                      <span className="text-muted-foreground font-semibold">Role:</span>{" "}
                       <Badge variant={selectedTalent.role === "Singer" ? "default" : "secondary"}>
                         {selectedTalent.role}
                       </Badge>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Age:</span> {selectedTalent.age}
+                      <span className="text-muted-foreground font-semibold">Age:</span>{" "}
+                      <span className="font-bold text-primary">{selectedTalent.age}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Height:</span> {selectedTalent.height}
+                      <span className="text-muted-foreground font-semibold">Height:</span>{" "}
+                      <span className="font-bold text-primary">{selectedTalent.height}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Weight:</span> {selectedTalent.weight}
+                      <span className="text-muted-foreground font-semibold">Weight:</span>{" "}
+                      <span className="font-bold text-primary">{selectedTalent.weight}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Hair:</span> {selectedTalent.hairColor}
+                      <span className="text-muted-foreground font-semibold">Hair:</span>{" "}
+                      <span className="font-bold text-primary">{selectedTalent.hairColor}</span>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Eyes:</span> {selectedTalent.eyeColor}
+                      <span className="text-muted-foreground font-semibold">Eyes:</span>{" "}
+                      <span className="font-bold text-primary">{selectedTalent.eyeColor}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Rating Input */}
+              {/* Star rating */}
               <div className="space-y-2">
-                <Label>Internal Star Rating</Label>
+                <Label className="font-black text-primary uppercase tracking-wider text-xs">
+                  Internal Star Rating
+                </Label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -281,26 +323,36 @@ export function RecruiterDashboard() {
                 </div>
               </div>
 
-              {/* Notes Input */}
+              {/* Notes */}
               <div className="space-y-2">
-                <Label htmlFor="notes">Recruiter Notes (Private)</Label>
+                <Label
+                  htmlFor="notes"
+                  className="font-black text-primary uppercase tracking-wider text-xs"
+                >
+                  Recruiter Notes (Private)
+                </Label>
                 <Textarea
                   id="notes"
                   placeholder="Add your private notes about this talent..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={4}
+                  className="border-border bg-muted focus:ring-accent"
                 />
               </div>
 
               {/* Actions */}
               <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsModalOpen(false)}
+                  className="border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-colors"
+                >
                   Cancel
                 </Button>
                 <Button
                   onClick={handleSubmitRating}
-                  className="bg-accent hover:bg-accent/90"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold px-6 shadow-sm"
                   disabled={rating === 0}
                 >
                   Submit Rating
