@@ -4,17 +4,48 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Shield, AlertCircle } from "lucide-react";
+import { Shield, AlertCircle, Loader2 } from "lucide-react";
 
 export function AdminLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Admin login:", { email, password });
-    navigate("/admin/dashboard");
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // SECURITY CHECK: Only let Admins in
+        if (data.user.role !== 'Admin') {
+          setError("Access Denied: Account does not have Admin privileges.");
+          setIsLoading(false);
+          return;
+        }
+
+        // Save session
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/admin/dashboard");
+      } else {
+        setError(data.message || "Invalid Admin Credentials");
+      }
+    } catch (err) {
+      setError("Server connection failed.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -30,12 +61,19 @@ export function AdminLogin() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-md text-center">
+              {error}
+            </div>
+          )}
+          
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
             <p className="text-sm text-destructive">
-              This area is for system administrators only. Unauthorized access attempts are logged and monitored.
+              Unauthorized access attempts are logged and monitored.
             </p>
           </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Admin Email</Label>
@@ -59,8 +97,15 @@ export function AdminLogin() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" size="lg">
-              Access System
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 font-bold" size="lg" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Authenticating...
+                </>
+              ) : (
+                "Access System"
+              )}
             </Button>
           </form>
           <div className="mt-6 text-center">

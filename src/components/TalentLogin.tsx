@@ -10,14 +10,40 @@ export function TalentLogin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Add this state at the top
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Put authentication when backend
-    console.log("Talent login:", { email, password });
-    navigate("/talent/dashboard");
-  };
+    setError("");
 
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // 1. Check if the person logging in is actually a 'Talent'
+        if (data.user.role !== 'Talent') {
+          setError("This account is not registered as a Talent.");
+          return;
+        }
+
+        // 2. Persist the session (save to browser memory)
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        // 3. Go to dashboard
+        navigate("/talent/dashboard");
+      } else {
+        setError(data.message);
+      }
+    } catch (err) {
+      setError("Cannot connect to server. Is app.js running?");
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
