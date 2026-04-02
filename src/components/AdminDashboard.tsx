@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { LogOut, UserPlus, Trash2, Loader2, CalendarPlus, Clock, X, Plus } from "lucide-react";
+import { LogOut, UserPlus, Trash2, Pencil, Loader2, CalendarPlus, Clock, X, Plus } from "lucide-react";
 
 export function AdminDashboard() {
   const navigate = useNavigate();
@@ -17,7 +17,8 @@ export function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   
   // --- USER MODAL STATE ---
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -27,6 +28,7 @@ export function AdminDashboard() {
 
   // --- AUDITION MODAL STATE ---
   const [isAuditionModalOpen, setIsAuditionModalOpen] = useState(false);
+  const [editingAuditionId, setEditingAuditionId] = useState<string | null>(null);
   const [newAuditionTitle, setNewAuditionTitle] = useState("");
   const [newAuditionLocation, setNewAuditionLocation] = useState("");
   const [newAuditionDate, setNewAuditionDate] = useState("");
@@ -64,22 +66,39 @@ export function AdminDashboard() {
   }, []);
 
   // --- 2. USER MANAGEMENT HANDLERS ---
-  const handleCreateUser = async () => {
+  const openCreateUserModal = () => {
+    setEditingUserId(null);
+    setNewUser({ name: "", email: "", password: "Password123!", role: "Recruiter" });
+    setIsUserModalOpen(true);
+  };
+
+  const openEditUserModal = (user: any) => {
+    setEditingUserId(user._id);
+    setNewUser({ name: user.name, email: user.email, password: "", role: user.role });
+    setIsUserModalOpen(true);
+  };
+
+  const handleSaveUser = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
-        method: 'POST',
+      const url = editingUserId 
+        ? `http://localhost:3000/api/users/${editingUserId}` 
+        : 'http://localhost:3000/api/register';
+      
+      const method = editingUserId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newUser),
       });
 
       if (response.ok) {
-        setIsCreateModalOpen(false);
-        setNewUser({ name: "", email: "", password: "Password123!", role: "Recruiter" });
+        setIsUserModalOpen(false);
         fetchData();
       } else {
-        alert("Failed to create user.");
+        alert("Failed to save user.");
       }
-    } catch (err) { console.error("Error creating user", err); }
+    } catch (err) { console.error("Error saving user", err); }
   };
 
   const handleDeleteUser = async (userId: string) => {
@@ -92,6 +111,27 @@ export function AdminDashboard() {
   };
 
   // --- 3. AUDITION MANAGEMENT HANDLERS ---
+  const openCreateAuditionModal = () => {
+    setEditingAuditionId(null);
+    setNewAuditionTitle("");
+    setNewAuditionLocation("");
+    setNewAuditionDate("");
+    setNewAuditionSlots(["09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM"]);
+    setIsAuditionModalOpen(true);
+  };
+
+  const openEditAuditionModal = (audition: any) => {
+    setEditingAuditionId(audition._id);
+    setNewAuditionTitle(audition.title);
+    setNewAuditionLocation(audition.location);
+    // Format the date so the HTML input element can read it (YYYY-MM-DD)
+    const formattedDate = new Date(audition.date).toISOString().split('T')[0];
+    setNewAuditionDate(formattedDate);
+    // Extract just the time strings for the UI
+    setNewAuditionSlots(audition.slots.map((s: any) => s.time));
+    setIsAuditionModalOpen(true);
+  };
+
   const handleAddSlot = () => {
     if (customSlot && !newAuditionSlots.includes(customSlot)) {
       setNewAuditionSlots([...newAuditionSlots, customSlot]);
@@ -103,18 +143,22 @@ export function AdminDashboard() {
     setNewAuditionSlots(newAuditionSlots.filter(slot => slot !== slotToRemove));
   };
 
-  const handleCreateAudition = async () => {
-    // NEW: Validation to ensure ALL fields are filled out
+  const handleSaveAudition = async () => {
     if (!newAuditionTitle || !newAuditionLocation || !newAuditionDate || newAuditionSlots.length === 0) {
       alert("Please fill in the Title, Location, Date, and add at least one time slot.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/auditions', {
-        method: 'POST',
+      const url = editingAuditionId 
+        ? `http://localhost:3000/api/auditions/${editingAuditionId}`
+        : 'http://localhost:3000/api/auditions';
+      
+      const method = editingAuditionId ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        // NEW: Sending title and location to the backend
         body: JSON.stringify({ 
           title: newAuditionTitle,
           location: newAuditionLocation,
@@ -125,16 +169,11 @@ export function AdminDashboard() {
 
       if (response.ok) {
         setIsAuditionModalOpen(false);
-        // Reset everything back to defaults for the next time
-        setNewAuditionTitle("");
-        setNewAuditionLocation("");
-        setNewAuditionDate("");
-        setNewAuditionSlots(["09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM"]);
         fetchData();
       } else {
-        alert("Failed to create audition date.");
+        alert("Failed to save audition.");
       }
-    } catch (err) { console.error("Error creating audition", err); }
+    } catch (err) { console.error("Error saving audition", err); }
   };
 
   const handleDeleteAudition = async (auditionId: string) => {
@@ -153,7 +192,6 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="bg-primary text-white py-4 px-6 shadow-lg">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -182,7 +220,7 @@ export function AdminDashboard() {
                   <CardTitle className="text-2xl">User Management</CardTitle>
                   <CardDescription>Manage all Recruiters and Talents</CardDescription>
                 </div>
-                <Button onClick={() => setIsCreateModalOpen(true)} className="bg-accent hover:bg-accent/90">
+                <Button onClick={openCreateUserModal} className="bg-accent hover:bg-accent/90">
                   <UserPlus className="w-4 h-4 mr-2" /> Create New Recruiter
                 </Button>
               </CardHeader>
@@ -207,7 +245,11 @@ export function AdminDashboard() {
                           <TableCell>
                             <Badge variant={user.role === "Talent" ? "default" : "secondary"}>{user.role}</Badge>
                           </TableCell>
-                          <TableCell className="text-right">
+                          <TableCell className="text-right space-x-2">
+                            {/* NEW EDIT BUTTON */}
+                            <Button variant="ghost" size="sm" onClick={() => openEditUserModal(user)} className="text-blue-600 hover:bg-blue-100 hover:text-blue-800">
+                              <Pencil className="w-4 h-4" />
+                            </Button>
                             <Button variant="ghost" size="sm" onClick={() => handleDeleteUser(user._id)} className="text-destructive hover:bg-destructive/10">
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -229,7 +271,7 @@ export function AdminDashboard() {
                   <CardTitle className="text-2xl">Audition Schedules</CardTitle>
                   <CardDescription>Create specific dates and generate available time slots for talents.</CardDescription>
                 </div>
-                <Button onClick={() => setIsAuditionModalOpen(true)} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                <Button onClick={openCreateAuditionModal} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <CalendarPlus className="w-4 h-4 mr-2" /> Create New Schedule
                 </Button>
               </CardHeader>
@@ -260,9 +302,15 @@ export function AdminDashboard() {
                               <p className="text-sm font-medium text-muted-foreground">Total Slots: {totalSlots}</p>
                               <Badge variant={bookedSlots > 0 ? "default" : "secondary"}>{bookedSlots} Booked</Badge>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={() => handleDeleteAudition(audition._id)} className="text-destructive hover:bg-destructive/10">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            <div className="flex flex-col gap-2">
+                              {/* NEW EDIT BUTTON */}
+                              <Button variant="ghost" size="sm" onClick={() => openEditAuditionModal(audition)} className="text-blue-600 hover:bg-blue-100 hover:text-blue-800">
+                                <Pencil className="w-4 h-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => handleDeleteAudition(audition._id)} className="text-destructive hover:bg-destructive/10">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </CardContent>
                         </Card>
                       )
@@ -275,12 +323,14 @@ export function AdminDashboard() {
         </Tabs>
       </main>
 
-      {/* --- MODAL: CREATE USER --- */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+      {/* --- MODAL: CREATE / EDIT USER --- */}
+      <Dialog open={isUserModalOpen} onOpenChange={setIsUserModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Account</DialogTitle>
-            <DialogDescription>Assign a new Recruiter to the system.</DialogDescription>
+            <DialogTitle>{editingUserId ? "Edit User" : "Create New Account"}</DialogTitle>
+            <DialogDescription>
+              {editingUserId ? "Update this user's details." : "Assign a new Recruiter to the system."}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -291,50 +341,54 @@ export function AdminDashboard() {
               <Label>Email Address</Label>
               <Input type="email" placeholder="email@example.com" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
             </div>
-            <div className="space-y-2">
-              <Label>Temporary Password</Label>
-              <Input type="text" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
-            </div>
+            
+            {/* Only require a password if we are creating a NEW user */}
+            {!editingUserId && (
+              <div className="space-y-2">
+                <Label>Temporary Password</Label>
+                <Input type="text" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
+              </div>
+            )}
+            
             <DialogFooter className="pt-4">
-              <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>Cancel</Button>
-              <Button onClick={handleCreateUser} className="bg-accent hover:bg-accent/90">Create Account</Button>
+              <Button variant="outline" onClick={() => setIsUserModalOpen(false)}>Cancel</Button>
+              <Button onClick={handleSaveUser} className="bg-accent hover:bg-accent/90">
+                {editingUserId ? "Save Changes" : "Create Account"}
+              </Button>
             </DialogFooter>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* --- MODAL: CREATE AUDITION SCHEDULE --- */}
+      {/* --- MODAL: CREATE / EDIT AUDITION --- */}
       <Dialog open={isAuditionModalOpen} onOpenChange={setIsAuditionModalOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Create Audition Schedule</DialogTitle>
-            <DialogDescription>Set the details and define the exact time slots available for booking.</DialogDescription>
+            <DialogTitle>{editingAuditionId ? "Edit Audition Schedule" : "Create Audition Schedule"}</DialogTitle>
+            <DialogDescription>
+              {editingAuditionId ? "Update the title, location, or date." : "Set the details and define the exact time slots."}
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6 py-2">
-            {/* Title Selection */}
             <div className="space-y-2">
               <Label className="font-bold">Audition Title</Label>
               <Input placeholder="e.g. Winter Play General Auditions" value={newAuditionTitle} onChange={(e) => setNewAuditionTitle(e.target.value)} className="w-full" />
             </div>
 
-            {/* Location Selection */}
             <div className="space-y-2">
               <Label className="font-bold">Location</Label>
               <Input placeholder="e.g. Studio A, Main Building" value={newAuditionLocation} onChange={(e) => setNewAuditionLocation(e.target.value)} className="w-full" />
             </div>
 
-            {/* Date Selection */}
             <div className="space-y-2">
               <Label className="font-bold">Audition Date</Label>
               <Input type="date" value={newAuditionDate} onChange={(e) => setNewAuditionDate(e.target.value)} className="w-full" />
             </div>
 
-            {/* Time Slots Builder */}
             <div className="space-y-3">
               <Label className="font-bold">Available Time Slots</Label>
               
-              {/* List of current slots */}
               <div className="flex flex-wrap gap-2 p-3 bg-muted/50 rounded-lg border border-border min-h-[60px]">
                 {newAuditionSlots.length === 0 ? (
                   <span className="text-sm text-muted-foreground italic">No time slots added.</span>
@@ -343,32 +397,42 @@ export function AdminDashboard() {
                     <Badge key={slot} variant="secondary" className="pl-3 pr-1 py-1 flex items-center gap-1 text-sm bg-background text-black border shadow-sm">
                       <Clock className="w-3 h-3 text-black mr-1" />
                       {slot}
-                      <button onClick={() => handleRemoveSlot(slot)} className="ml-1 hover:bg-destructive/20 hover:text-destructive text-black rounded-full p-0.5 transition-colors">
-                        <X className="w-3 h-3" />
-                      </button>
+                      {/* Disable deleting slots if we are editing, to protect talent bookings! */}
+                      {!editingAuditionId && (
+                        <button onClick={() => handleRemoveSlot(slot)} className="ml-1 hover:bg-destructive/20 hover:text-destructive text-black rounded-full p-0.5 transition-colors">
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
                     </Badge>
                   ))
                 )}
               </div>
 
-              {/* Add Custom Slot Input */}
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="e.g. 03:30 PM" 
-                  value={customSlot} 
-                  onChange={(e) => setCustomSlot(e.target.value)} 
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddSlot()}
-                />
-                <Button type="button" onClick={handleAddSlot} variant="secondary">
-                  <Plus className="w-4 h-4 mr-1" /> Add
-                </Button>
-              </div>
+              {/* Hide the "Add Slot" input if we are in Edit mode */}
+              {!editingAuditionId && (
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="e.g. 03:30 PM" 
+                    value={customSlot} 
+                    onChange={(e) => setCustomSlot(e.target.value)} 
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddSlot()}
+                  />
+                  <Button type="button" onClick={handleAddSlot} variant="secondary">
+                    <Plus className="w-4 h-4 mr-1" /> Add
+                  </Button>
+                </div>
+              )}
+              {editingAuditionId && (
+                <p className="text-xs text-muted-foreground italic">Time slots cannot be edited after an audition is created to prevent deleting talent bookings.</p>
+              )}
             </div>
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAuditionModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateAudition} className="bg-primary hover:bg-primary/90">Publish Schedule</Button>
+            <Button onClick={handleSaveAudition} className="bg-primary hover:bg-primary/90">
+              {editingAuditionId ? "Save Changes" : "Publish Schedule"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

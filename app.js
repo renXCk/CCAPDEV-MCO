@@ -53,7 +53,6 @@ app.get('/api/auditions', async (req, res) => {
 // --- ADMIN: CREATE NEW AUDITION DATE ---
 app.post('/api/auditions', async (req, res) => {
   try {
-    // 👇 Extract title and location from req.body
     const { title, location, date, slots } = req.body; 
     
     const formattedSlots = slots.map(time => ({ 
@@ -268,6 +267,37 @@ app.put('/api/users/profile', async (req, res) => {
     res.json({ success: true, user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+// --- ADMIN: UPDATE EXISTING USER ---
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    // We update the name and email of the specific user ID
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id, 
+      { name, email }, 
+      { new: true }
+    );
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update user" });
+  }
+});
+
+// --- ADMIN: UPDATE EXISTING AUDITION ---
+app.put('/api/auditions/:id', async (req, res) => {
+  try {
+    const { title, location, date } = req.body;
+    const updatedAudition = await Audition.findByIdAndUpdate(
+      req.params.id, 
+      { title, location, date }, 
+      { new: true }
+    );
+    res.json({ success: true, audition: updatedAudition });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update audition" });
   }
 });
 
