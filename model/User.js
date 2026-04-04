@@ -18,10 +18,10 @@ const userSchema = new mongoose.Schema({
     eyeColor: { type: String },
     headshot: { type: String }, // URL to image
     media: {
-      photos: [{ type: String }],
-      videos: [{ type: String }],
-      resume: { type: String }
-    }
+  photos: { type: [{ type: String }], default: [] },
+  videos: { type: [{ type: String }], default: [] },
+  resume: { type: String }
+  }
   }
 });
 

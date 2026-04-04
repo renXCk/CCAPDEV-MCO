@@ -1,10 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { User, Image as ImageIcon, Calendar, LogOut, Loader2 } from "lucide-react";
+import { User, Image as ImageIcon, Calendar, LogOut, Loader2, Upload, Video, Trash2, } from "lucide-react";
+
+const API_BASE_URL = "http://localhost:3000";
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+type MediaState = {
+  headshot: string;
+  photos: string[];
+  videos: string[];
+};
 
 export function TalentDashboard() {
   const navigate = useNavigate();
@@ -18,6 +28,16 @@ export function TalentDashboard() {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [dbAuditions, setDbAuditions] = useState<any[]>([]);
+
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [isSavingMedia, setIsSavingMedia] = useState(false);
+
+  const [media, setMedia] = useState<MediaState>({
+    headshot: "",
+    photos: [],
+    videos: [],
+  });
 
   const [vitals, setVitals] = useState({
     name: "",
@@ -55,9 +75,143 @@ export function TalentDashboard() {
       eyeColor: loggedInUser.talentProfile?.eyeColor || "",
     });
 
+    setMedia({
+    headshot: loggedInUser.talentProfile?.headshot || "",
+    photos: loggedInUser.talentProfile?.media?.photos || [],
+    videos: loggedInUser.talentProfile?.media?.videos || [],
+    });
+
     fetchAuditions();
     setIsLoading(false);
   }, [navigate]);
+
+  const uploadToCloudinary = async (file: File, resourceType: "image" | "video") => {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    throw new Error("Missing Cloudinary config.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Upload failed");
+  }
+
+  return data.secure_url;
+};
+
+const persistMedia = async (nextMedia: MediaState) => {
+  if (!userId) return;
+
+  setIsSavingMedia(true);
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/users/media`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, media: nextMedia }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || "Failed to save media");
+
+    setMedia({
+      headshot: data.user.talentProfile?.headshot || "",
+      photos: data.user.talentProfile?.media?.photos || [],
+      videos: data.user.talentProfile?.media?.videos || [],
+    });
+
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        ...currentUser,
+        talentProfile: data.user.talentProfile,
+      })
+    );
+
+    alert("Media updated!");
+  } catch (err: any) {
+    alert(err.message || "Failed to save media");
+  } finally {
+    setIsSavingMedia(false);
+  }
+};
+
+const handleUpload = async (
+  e: ChangeEvent<HTMLInputElement>,
+  type: "image" | "video"
+) => {
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  try {
+    if (type === "image") {
+      setIsUploadingPhoto(true);
+    } else {
+      setIsUploadingVideo(true);
+    }
+
+    const urls = await Promise.all(
+      Array.from(files).map((file) => uploadToCloudinary(file, type))
+    );
+
+    const updated: MediaState =
+      type === "image"
+        ? {
+            headshot: media.headshot || urls[0],
+            photos: [...media.photos, ...urls],
+            videos: media.videos,
+          }
+        : {
+            ...media,
+            videos: [...media.videos, ...urls],
+          };
+
+    await persistMedia(updated);
+  } catch (err: any) {
+    alert(err.message || "Upload failed");
+  } finally {
+    setIsUploadingPhoto(false);
+    setIsUploadingVideo(false);
+    e.target.value = "";
+  }
+};
+
+const handleSetHeadshot = async (url: string) => {
+  await persistMedia({
+    ...media,
+    headshot: url,
+  });
+};
+
+const handleRemovePhoto = async (url: string) => {
+  const updatedPhotos = media.photos.filter((photo) => photo !== url);
+
+  await persistMedia({
+    headshot: media.headshot === url ? updatedPhotos[0] || "" : media.headshot,
+    photos: updatedPhotos,
+    videos: media.videos,
+  });
+};
+
+const handleRemoveVideo = async (url: string) => {
+  await persistMedia({
+    ...media,
+    videos: media.videos.filter((video) => video !== url),
+  });
+};
 
   const handleConfirmBooking = async (auditionId: string, slotTime: string) => {
     try {
@@ -232,6 +386,84 @@ export function TalentDashboard() {
                 </CardContent>
               </Card>
             )}
+
+            {/* MEDIA */}
+{activeTab === "media" && (
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-2xl">Media Upload</CardTitle>
+    </CardHeader>
+
+    <CardContent className="space-y-6">
+      {/* Upload Photos */}
+      <div>
+        <Label>Upload Photos</Label>
+        <Input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => handleUpload(e, "image")}
+        />
+      </div>
+
+      {/* Upload Videos */}
+      <div>
+        <Label>Upload Videos</Label>
+        <Input
+          type="file"
+          accept="video/*"
+          multiple
+          onChange={(e) => handleUpload(e, "video")}
+        />
+      </div>
+
+      {/* Photos */}
+      <div>
+        <h3 className="text-lg font-semibold">Photos</h3>
+        {media.photos.length === 0 ? (
+          <p>No photos uploaded.</p>
+        ) : (
+          media.photos.map((photo) => (
+            <div key={photo} className="mb-4">
+              <img src={photo} className="w-32 h-32 object-cover" />
+
+              <div className="flex gap-2 mt-2">
+                <Button onClick={() => handleSetHeadshot(photo)}>
+                  {media.headshot === photo ? "Current Headshot" : "Set Headshot"}
+                </Button>
+
+                <Button variant="destructive" onClick={() => handleRemovePhoto(photo)}>
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Videos */}
+      <div>
+        <h3 className="text-lg font-semibold">Videos</h3>
+        {media.videos.length === 0 ? (
+          <p>No videos uploaded.</p>
+        ) : (
+          media.videos.map((video) => (
+            <div key={video} className="mb-4">
+              <video src={video} controls className="w-64" />
+
+              <Button
+                variant="destructive"
+                onClick={() => handleRemoveVideo(video)}
+              >
+                Delete
+              </Button>
+            </div>
+          ))
+        )}
+      </div>
+    </CardContent>
+  </Card>
+)}
 
             {/* AUDITIONS */}
 {activeTab === "auditions" && (

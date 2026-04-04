@@ -131,7 +131,12 @@ app.post('/api/login', async (req, res) => {
           id: user._id, 
           name: user.name, 
           role: user.role, 
+<<<<<<< HEAD
+          email: user.email,
+          talentProfile: user.talentProfile || null 
+=======
           email: user.email 
+>>>>>>> 4e4cf09b881111360ed199dcb1b0ab362e117a76
         } 
       });
     } else {
@@ -308,6 +313,33 @@ app.put('/api/auditions/:id', async (req, res) => {
     res.json({ success: true, audition: updatedAudition });
   } catch (err) {
     res.status(500).json({ error: "Failed to update audition" });
+  }
+});
+
+app.put('/api/users/media', async (req, res) => {
+  try {
+    const { userId, media } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "talentProfile.headshot": media.headshot || "",
+          "talentProfile.media.photos": media.photos || [],
+          "talentProfile.media.videos": media.videos || []
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    console.error("MEDIA UPDATE ERROR:", err);
+    res.status(500).json({ error: "Failed to update media" });
   }
 });
 
