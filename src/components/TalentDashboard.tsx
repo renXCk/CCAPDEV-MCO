@@ -1,0 +1,580 @@
+import { useState, useEffect, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { User, Image as ImageIcon, Calendar, LogOut, Loader2, Upload, Video, Trash2, } from "lucide-react";
+
+const API_BASE_URL = "http://localhost:3000";
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+type MediaState = {
+  headshot: string;
+  photos: string[];
+  videos: string[];
+};
+
+export function TalentDashboard() {
+  const navigate = useNavigate();
+
+  const [selectedSlot, setSelectedSlot] = useState<{
+    auditionId: string;
+    time: string;
+  } | null>(null);
+
+  const [activeTab, setActiveTab] = useState("vitals");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dbAuditions, setDbAuditions] = useState<any[]>([]);
+
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [isSavingMedia, setIsSavingMedia] = useState(false);
+
+  const [media, setMedia] = useState<MediaState>({
+    headshot: "",
+    photos: [],
+    videos: [],
+  });
+
+  const [vitals, setVitals] = useState({
+    name: "",
+    height: "",
+    weight: "",
+    hairColor: "",
+    eyeColor: "",
+  });
+
+  const fetchAuditions = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/auditions");
+      const data = await res.json();
+      setDbAuditions(data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (!loggedInUser.id) {
+      navigate("/login");
+      return;
+    }
+
+    setUserId(loggedInUser.id);
+
+    setVitals({
+      name: loggedInUser.name || "",
+      height: loggedInUser.talentProfile?.height || "",
+      weight: loggedInUser.talentProfile?.weight || "",
+      hairColor: loggedInUser.talentProfile?.hairColor || "",
+      eyeColor: loggedInUser.talentProfile?.eyeColor || "",
+    });
+
+    setMedia({
+    headshot: loggedInUser.talentProfile?.headshot || "",
+    photos: loggedInUser.talentProfile?.media?.photos || [],
+    videos: loggedInUser.talentProfile?.media?.videos || [],
+    });
+
+    fetchAuditions();
+    setIsLoading(false);
+  }, [navigate]);
+
+  const uploadToCloudinary = async (file: File, resourceType: "image" | "video") => {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    throw new Error("Missing Cloudinary config.");
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || "Upload failed");
+  }
+
+  return data.secure_url;
+};
+
+const persistMedia = async (nextMedia: MediaState) => {
+  if (!userId) return;
+
+  setIsSavingMedia(true);
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/users/media`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, media: nextMedia }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || "Failed to save media");
+
+    setMedia({
+      headshot: data.user.talentProfile?.headshot || "",
+      photos: data.user.talentProfile?.media?.photos || [],
+      videos: data.user.talentProfile?.media?.videos || [],
+    });
+
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        ...currentUser,
+        talentProfile: data.user.talentProfile,
+      })
+    );
+
+    alert("Media updated!");
+  } catch (err: any) {
+    alert(err.message || "Failed to save media");
+  } finally {
+    setIsSavingMedia(false);
+  }
+};
+
+const handleUpload = async (
+  e: ChangeEvent<HTMLInputElement>,
+  type: "image" | "video"
+) => {
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  try {
+    if (type === "image") {
+      setIsUploadingPhoto(true);
+    } else {
+      setIsUploadingVideo(true);
+    }
+
+    const urls = await Promise.all(
+      Array.from(files).map((file) => uploadToCloudinary(file, type))
+    );
+
+    const updated: MediaState =
+      type === "image"
+        ? {
+            headshot: media.headshot || urls[0],
+            photos: [...media.photos, ...urls],
+            videos: media.videos,
+          }
+        : {
+            ...media,
+            videos: [...media.videos, ...urls],
+          };
+
+    await persistMedia(updated);
+  } catch (err: any) {
+    alert(err.message || "Upload failed");
+  } finally {
+    setIsUploadingPhoto(false);
+    setIsUploadingVideo(false);
+    e.target.value = "";
+  }
+};
+
+const handleSetHeadshot = async (url: string) => {
+  await persistMedia({
+    ...media,
+    headshot: url,
+  });
+};
+
+const handleRemovePhoto = async (url: string) => {
+  const updatedPhotos = media.photos.filter((photo) => photo !== url);
+
+  await persistMedia({
+    headshot: media.headshot === url ? updatedPhotos[0] || "" : media.headshot,
+    photos: updatedPhotos,
+    videos: media.videos,
+  });
+};
+
+const handleRemoveVideo = async (url: string) => {
+  await persistMedia({
+    ...media,
+    videos: media.videos.filter((video) => video !== url),
+  });
+};
+
+  const handleConfirmBooking = async (auditionId: string, slotTime: string) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/auditions/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ auditionId, slotTime, talentId: userId }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Booking Confirmed! 🎉");
+        setSelectedSlot(null);
+        fetchAuditions();
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert("Server error during booking.");
+    }
+  };
+
+  const handleCancelBooking = async (auditionId: string, slotTime: string) => {
+  try {
+    const res = await fetch("http://localhost:3000/api/auditions/remove", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        auditionId,
+        slotTime,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Booking Cancelled ❌");
+      fetchAuditions(); // refresh slots
+    } else {
+      alert(data.error);
+    }
+  } catch (err) {
+    alert("Error cancelling booking.");
+  }
+  };
+  
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, vitals }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        const updatedSession = {
+          ...JSON.parse(localStorage.getItem("user") || "{}"),
+          talentProfile: data.user.talentProfile,
+        };
+
+        localStorage.setItem("user", JSON.stringify(updatedSession));
+
+        alert("Changes Saved! ✅");
+      }
+    } catch (err) {
+      alert("Error saving profile.");
+    }
+  };
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* HEADER */}
+      <header className="bg-primary text-white py-4 px-6 flex justify-between items-center shadow-lg">
+        <h1 className="text-2xl font-bold">PGT Digital | Talent</h1>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            localStorage.removeItem("user");
+            navigate("/");
+          }}
+          className="text-white"
+        >
+          <LogOut className="w-4 h-4 mr-2" /> Logout
+        </Button>
+      </header>
+
+      <div className="flex">
+        {/* SIDEBAR */}
+        <aside className="w-64 bg-primary text-white min-h-[calc(100vh-64px)] p-6 space-y-2">
+          <button
+            onClick={() => setActiveTab("vitals")}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${
+              activeTab === "vitals" ? "bg-accent" : "hover:bg-white/10"
+            }`}
+          >
+            <User className="w-5 h-5" /> <span>Vitals</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("media")}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${
+              activeTab === "media" ? "bg-accent" : "hover:bg-white/10"
+            }`}
+          >
+            <ImageIcon className="w-5 h-5" /> <span>Media</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("auditions")}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${
+              activeTab === "auditions" ? "bg-accent" : "hover:bg-white/10"
+            }`}
+          >
+            <Calendar className="w-5 h-5" /> <span>Auditions</span>
+          </button>
+        </aside>
+
+        {/* MAIN */}
+        <main className="flex-1 p-8">
+          <div className="max-w-6xl mx-auto space-y-8">
+
+            {/* VITALS */}
+            {activeTab === "vitals" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl">Digital Set Card</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <Label>Full Name</Label>
+                      <Input value={vitals.name} readOnly />
+                    </div>
+
+                    <div>
+                      <Label>Height</Label>
+                      <Input value={vitals.height} onChange={(e) => setVitals({ ...vitals, height: e.target.value })} />
+                    </div>
+
+                    <div>
+                      <Label>Weight</Label>
+                      <Input value={vitals.weight} onChange={(e) => setVitals({ ...vitals, weight: e.target.value })} />
+                    </div>
+
+                    <div>
+                      <Label>Hair Color</Label>
+                      <Input value={vitals.hairColor} onChange={(e) => setVitals({ ...vitals, hairColor: e.target.value })} />
+                    </div>
+
+                    <div>
+                      <Label>Eye Color</Label>
+                      <Input value={vitals.eyeColor} onChange={(e) => setVitals({ ...vitals, eyeColor: e.target.value })} />
+                    </div>
+                  </div>
+
+                  <Button onClick={handleSave} className="bg-accent">
+                    Save Changes
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* MEDIA */}
+{activeTab === "media" && (
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-2xl">Media Upload</CardTitle>
+    </CardHeader>
+
+    <CardContent className="space-y-6">
+      {/* Upload Photos */}
+      <div>
+        <Label>Upload Photos</Label>
+        <Input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => handleUpload(e, "image")}
+        />
+      </div>
+
+      {/* Upload Videos */}
+      <div>
+        <Label>Upload Videos</Label>
+        <Input
+          type="file"
+          accept="video/*"
+          multiple
+          onChange={(e) => handleUpload(e, "video")}
+        />
+      </div>
+
+      {/* Photos */}
+      <div>
+        <h3 className="text-lg font-semibold">Photos</h3>
+        {media.photos.length === 0 ? (
+          <p>No photos uploaded.</p>
+        ) : (
+          media.photos.map((photo) => (
+            <div key={photo} className="mb-4">
+              <img src={photo} className="w-32 h-32 object-cover" />
+
+              <div className="flex gap-2 mt-2">
+                <Button onClick={() => handleSetHeadshot(photo)}>
+                  {media.headshot === photo ? "Current Headshot" : "Set Headshot"}
+                </Button>
+
+                <Button variant="destructive" onClick={() => handleRemovePhoto(photo)}>
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Videos */}
+      <div>
+        <h3 className="text-lg font-semibold">Videos</h3>
+        {media.videos.length === 0 ? (
+          <p>No videos uploaded.</p>
+        ) : (
+          media.videos.map((video) => (
+            <div key={video} className="mb-4">
+              <video src={video} controls className="w-64" />
+
+              <Button
+                variant="destructive"
+                onClick={() => handleRemoveVideo(video)}
+              >
+                Delete
+              </Button>
+            </div>
+          ))
+        )}
+      </div>
+    </CardContent>
+  </Card>
+)}
+
+            {/* AUDITIONS */}
+{activeTab === "auditions" && (
+  <Card>
+    <CardHeader>
+      <CardTitle className="text-2xl">Available Auditions</CardTitle>
+    </CardHeader>
+
+    <CardContent className="space-y-6">
+      {dbAuditions.map((audition: any) => {
+        const mySlot = audition.slots.find(
+          (s: any) => (s.talentId?._id || s.talentId) === userId
+        );
+
+        return (
+          <div
+            key={audition._id}
+            className="p-6 border rounded-xl bg-muted/30 space-y-4"
+          >
+            {/* HEADER */}
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-bold">{audition.title}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {audition.location} • {audition.date}
+                </p>
+              </div>
+
+              {mySlot && (
+                <div className="flex items-center gap-2">
+                  <div className="bg-green-500 text-black px-3 py-1 rounded-full text-xs font-bold">
+                    ✓ BOOKED
+                  </div>
+
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleCancelBooking(audition._id, mySlot.time)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* SLOTS */}
+            <div className="flex flex-wrap gap-2">
+              {audition.slots.map((slot: any) => {
+                const slotUserId = slot.talentId?._id || slot.talentId;
+                const isMine = slotUserId === userId;
+                const isTaken = slot.status === "Booked" && !isMine;
+
+                if (isMine) {
+                  return (
+                    <div
+                      key={slot.time}
+                      className="px-4 py-2 bg-green-500 text-black rounded-md font-bold"
+                    >
+                      {slot.time} (Confirmed)
+                    </div>
+                  );
+                }
+
+                return (
+                  <Button
+                    key={slot.time}
+                    variant="outline"
+                    disabled={isTaken || (mySlot && !isMine)}
+                    className={
+                      selectedSlot?.auditionId === audition._id &&
+                      selectedSlot?.time === slot.time
+                        ? "bg-accent text-white"
+                        : ""
+                    }
+                    onClick={() =>
+                      setSelectedSlot({
+                        auditionId: audition._id,
+                        time: slot.time,
+                      })
+                    }
+                  >
+                    {slot.time} {isTaken ? "(Full)" : ""}
+                  </Button>
+                );
+              })}
+            </div>
+
+            {/* CONFIRM BUTTON */}
+            {selectedSlot && selectedSlot.auditionId === audition._id && !mySlot && (
+              <Button
+                className="w-full bg-primary text-white"
+                onClick={() =>
+                  handleConfirmBooking(
+                    audition._id,
+                    selectedSlot.time
+                  )
+                }
+              >
+                Confirm Booking for {selectedSlot.time}
+              </Button>
+            )}
+          </div>
+        );
+             })}
+      </CardContent>
+    </Card>
+  )}
+
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
