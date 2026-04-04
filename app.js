@@ -42,10 +42,10 @@ app.get('/api/admin/users', async (req, res) => {
 // --- 2. GET ALL AUDITIONS (Talent View) ---
 app.get('/api/auditions', async (req, res) => {
   try {
-    // Populate allows us to see the Talent's name instead of just their ID
-    const auditions = await Audition.find().populate('slots.talentId', 'name');
+    const auditions = await Audition.find(); 
     res.json(auditions);
   } catch (err) {
+    console.error("❌ AUDITION ERROR:", err); 
     res.status(500).json({ error: 'Failed to fetch auditions' });
   }
 });
@@ -89,6 +89,8 @@ app.delete('/api/auditions/:id', async (req, res) => {
 // --- RECRUITER: REMOVE TALENT FROM A SLOT ---
 app.post('/api/auditions/remove', async (req, res) => {
   try {
+    console.log("REMOVE REQUEST:", req.body); // 
+
     const { auditionId, slotTime } = req.body;
 
     const audition = await Audition.findOneAndUpdate(
@@ -99,11 +101,18 @@ app.post('/api/auditions/remove', async (req, res) => {
           "slots.$.status": "Open" 
         } 
       },
-      { returnDocument: 'after' }
+      { new: true }
     );
+
+    console.log(" RESULT:", audition); // 
+
+    if (!audition) {
+      return res.status(400).json({ error: "Slot not found or mismatch" });
+    }
 
     res.json({ success: true, audition });
   } catch (err) {
+    console.error(" REMOVE ERROR:", err); 
     res.status(500).json({ error: 'Server error during removal' });
   }
 });
@@ -154,7 +163,8 @@ app.post('/api/register', async (req, res) => {
     await newUser.save();
     res.status(201).json({ success: true });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+  console.error("❌ REGISTER ERROR:", err);
+  res.status(400).json({ error: err.message });
   }
 });
 
