@@ -30,6 +30,9 @@ export function RecruiterTalentDetails() {
             hairColor: found.talentProfile?.hairColor || "N/A",
             eyeColor: found.talentProfile?.eyeColor || "N/A",
             headshot: found.talentProfile?.headshot || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200",
+            
+            photos: found.talentProfile?.media?.photos || [],
+            videos: found.talentProfile?.media?.videos || [],
           });
         }
         setLoading(false);
@@ -89,13 +92,23 @@ export function RecruiterTalentDetails() {
 
           <div className="mt-12">
             <h3 className="text-2xl font-semibold mb-6">Portfolio Gallery</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/4] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 font-bold border-2 border-dashed border-slate-300">
-                  Media {i}
-                </div>
-              ))}
-            </div>
+            {talent.photos && talent.photos.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {talent.photos.map((photoUrl: string, index: number) => (
+                  <div key={index} className="aspect-[3/4] bg-slate-200 rounded-xl flex items-center justify-center overflow-hidden border-2 border-slate-200 shadow-sm">
+                    <img 
+                      src={photoUrl} 
+                      alt={`${talent.name} portfolio ${index + 1}`} 
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center bg-slate-100 rounded-xl border-2 border-dashed border-slate-300">
+                <p className="text-slate-500 font-medium">No portfolio photos uploaded yet.</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
