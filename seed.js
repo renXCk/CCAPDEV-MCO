@@ -4,12 +4,15 @@ import Audition from './model/Audition.js';
 
 async function seedDB() {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/pgt_database');
-    console.log('✅ Connected to MongoDB for seeding...');
+    const dbURI = 'mongodb+srv://aaronjamesgonzales_db_user:C53YxT1mlwUzI3Bp@ccapdevmc2.pwygzwx.mongodb.net/?appName=ccapdevmc2';
+    
+    await mongoose.connect(dbURI);
+    console.log('✅ Connected to MongoDB ATLAS for seeding...');
 
-    // Clear existing data
+    // Clear existing data (Be careful: this wipes the cloud database!)
     await User.deleteMany({});
     await Audition.deleteMany({});
+
 
     // 1. Create 5 Sample Talents
     const talents = await User.insertMany([

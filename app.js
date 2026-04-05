@@ -13,8 +13,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()); 
 
-mongoose.connect('mongodb://127.0.0.1:27017/pgt_database')
-  .then(() => console.log('✅ Connected to MongoDB!'))
+const dbURI = 'mongodb+srv://aaronjamesgonzales_db_user:C53YxT1mlwUzI3Bp@ccapdevmc2.pwygzwx.mongodb.net/?appName=ccapdevmc2';
+
+mongoose.connect(dbURI)
+  .then(() => console.log('✅ Connected to MongoDB Atlas!'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // --- 1. THE RECRUITER'S VIEW (Strictly Talents) ---
