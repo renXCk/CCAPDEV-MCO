@@ -46,6 +46,9 @@ export function RecruiterDashboard() {
         height: user.talentProfile?.height || "N/A",
         weight: user.talentProfile?.weight || "N/A",
         headshot: user.talentProfile?.headshot || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200", 
+        
+        photos: user.talentProfile?.media?.photos || [],
+        videos: user.talentProfile?.media?.videos || [],
       }));
 
       setDbApplicants(formattedTalents);
