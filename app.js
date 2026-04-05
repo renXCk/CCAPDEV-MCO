@@ -131,12 +131,8 @@ app.post('/api/login', async (req, res) => {
           id: user._id, 
           name: user.name, 
           role: user.role, 
-<<<<<<< HEAD
           email: user.email,
           talentProfile: user.talentProfile || null 
-=======
-          email: user.email 
->>>>>>> 4e4cf09b881111360ed199dcb1b0ab362e117a76
         } 
       });
     } else {
