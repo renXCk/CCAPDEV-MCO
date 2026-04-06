@@ -7,8 +7,8 @@ import { Label } from "./ui/label";
 import { User, Image as ImageIcon, Calendar, LogOut, Loader2, Upload, Video, Trash2, } from "lucide-react";
 
 const API_BASE_URL = "http://localhost:3000";
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const CLOUDINARY_CLOUD_NAME = "dcxk8wmok";
+const CLOUDINARY_UPLOAD_PRESET = "talent_upload";
 
 type MediaState = {
   headshot: string;
@@ -180,6 +180,7 @@ const handleUpload = async (
           };
 
     await persistMedia(updated);
+
   } catch (err: any) {
     alert(err.message || "Upload failed");
   } finally {
